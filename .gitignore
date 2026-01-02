@@ -1,37 +1,39 @@
-# Logs
-logs
-*.log
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
-pnpm-debug.log*
-lerna-debug.log*
-
 # Dependency directories
 node_modules/
 
-# Build outputs
+# Build directories
 dist/
-dist-ssr/
-*.zip
+build/
+out/
+.next/
+.nuxt/
 
-# Local environment files
+# Production
+.cache/
+.env
+.env.local
+.env.production
+.env.development
+
+# IDE files
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Vue
+dist-ssr/
 *.local
 
-# Editor directories and files
-.vscode/*
-!.vscode/extensions.json
-.idea/
-.DS_Store
-*.suo
-*.ntvs*
-*.njsproj
-*.sln
-*.sw?
-
-# Media
-*.mp4
-# Environment variables
-.env
-
-/dist
+# React
+coverage/
+*.log
