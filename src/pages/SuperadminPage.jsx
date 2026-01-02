@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
 import React from "react";
-const API_BASE = "http://localhost:3000";
+const API_BASE = "https://hasbani-backend-production.up.railway.app";
 
 export default function SuperadminPage() {
   const [admins, setAdmins] = useState([]);

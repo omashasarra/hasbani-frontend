@@ -11,7 +11,7 @@ export default function Login() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const res = await axios.post("http://localhost:3000/auth/login", {
+      const res = await axios.post("https://hasbani-backend-production.up.railway.app/auth/login", {
         email: email.trim().toLowerCase(),
         password: password.trim(),
       });

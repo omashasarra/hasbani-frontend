@@ -26,7 +26,7 @@ const AdminProducts = ({ lang = "EN" }) => {
       }
 
       const res = await axios.get(
-        `http://localhost:3000/products/${lang.toLowerCase()}`,
+        `https://hasbani-backend-production.up.railway.app/products/${lang.toLowerCase()}`,
         { headers: { Authorization: `Bearer ${token}` } }
       );
 
@@ -48,7 +48,7 @@ const AdminProducts = ({ lang = "EN" }) => {
   const fetchCategories = async () => {
     try {
       const res = await axios.get(
-        `http://localhost:3000/products/categories/${lang.toLowerCase()}`,
+        `https://hasbani-backend-production.up.railway.app/products/categories/${lang.toLowerCase()}`,
         { headers: { Authorization: `Bearer ${token}` } }
       );
 
@@ -100,7 +100,7 @@ const AdminProducts = ({ lang = "EN" }) => {
     );
 
     try {
-      await axios.post(`http://localhost:3000/products/create`, formData, {
+      await axios.post(`https://hasbani-backend-production.up.railway.app/products/create`, formData, {
         headers: {
           "Content-Type": "multipart/form-data",
           Authorization: `Bearer ${token}`,
@@ -139,7 +139,7 @@ const AdminProducts = ({ lang = "EN" }) => {
 
     try {
       await axios.post(
-        `http://localhost:3000/products/modify/${editingProduct.id}`,
+        `https://hasbani-backend-production.up.railway.app/products/modify/${editingProduct.id}`,
         formData,
         {
           headers: {
@@ -162,7 +162,7 @@ const AdminProducts = ({ lang = "EN" }) => {
       return;
 
     try {
-      await axios.delete(`http://localhost:3000/products/delete/${id}`, {
+      await axios.delete(`https://hasbani-backend-production.up.railway.app/products/delete/${id}`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       fetchProducts();
@@ -184,7 +184,7 @@ const AdminProducts = ({ lang = "EN" }) => {
 
     try {
       const res = await axios.post(
-        "http://localhost:3000/products/categories/create",
+        "https://hasbani-backend-production.up.railway.app/products/categories/create",
         {
           translations: [
             { language: "en", name: newCategory.en },
@@ -211,7 +211,7 @@ const AdminProducts = ({ lang = "EN" }) => {
 
     try {
       await axios.delete(
-        `http://localhost:3000/products/categories/delete/${id}`,
+        `https://hasbani-backend-production.up.railway.app/products/categories/delete/${id}`,
         { headers: { Authorization: `Bearer ${token}` } }
       );
 
@@ -441,7 +441,7 @@ const AdminProducts = ({ lang = "EN" }) => {
               className="bg-white p-4 rounded shadow flex flex-col md:flex-row items-center gap-4"
             >
               <img
-                src={`http://localhost:3000/uploads/${p.image}`}
+                src={`https://hasbani-backend-production.up.railway.app/uploads/${p.image}`}
                 alt={p.translations.en.name}
                 className="w-32 h-32 object-cover rounded"
               />
