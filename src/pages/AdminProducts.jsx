@@ -1,8 +1,8 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import axios from "axios";
 
 const AdminProducts = ({ lang = "EN" }) => {
-  const formRef = useRef(null);
+  const formRef = useRef(null); 
   const [products, setProducts] = useState([]);
   const [categories, setCategories] = useState([]);
   const [newProduct, setNewProduct] = useState({
@@ -21,10 +21,7 @@ const AdminProducts = ({ lang = "EN" }) => {
   // Fetch products
   const fetchProducts = async () => {
     try {
-      if (!token) {
-        console.error("No admin token found");
-        return;
-      }
+      if (!token) return console.error("No admin token found");
 
       const res = await axios.get(
         `https://hasbani-backend-production.up.railway.app/products/${lang.toLowerCase()}`,
@@ -101,20 +98,21 @@ const AdminProducts = ({ lang = "EN" }) => {
     );
 
     try {
-      await axios.post(`https://hasbani-backend-production.up.railway.app/products/create`, formData, {
-        headers: {
-          "Content-Type": "multipart/form-data",
-          Authorization: `Bearer ${token}`,
-        },
-      });
+      await axios.post(
+        `https://hasbani-backend-production.up.railway.app/products/create`,
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
       fetchProducts();
       setNewProduct({
         category_id: "",
         image: null,
-        translations: {
-          en: { name: "", description: "" },
-          ar: { name: "", description: "" },
-        },
+        translations: { en: { name: "", description: "" }, ar: { name: "", description: "" } },
       });
       document.getElementById("productImage").value = "";
       alert("Product added successfully!");
@@ -159,13 +157,13 @@ const AdminProducts = ({ lang = "EN" }) => {
 
   // Delete product
   const handleDeleteProduct = async (id) => {
-    if (!window.confirm("Are you sure you want to delete this product?"))
-      return;
+    if (!window.confirm("Are you sure you want to delete this product?")) return;
 
     try {
-      await axios.delete(`https://hasbani-backend-production.up.railway.app/products/delete/${id}`, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
+      await axios.delete(
+        `https://hasbani-backend-production.up.railway.app/products/delete/${id}`,
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
       fetchProducts();
     } catch (err) {
       console.error("Delete Product Error:", err.response || err);
@@ -176,15 +174,8 @@ const AdminProducts = ({ lang = "EN" }) => {
   const handleAddCategory = async () => {
     if (!newCategory.en || !newCategory.ar) return alert("Fill both fields");
 
-    console.log("=== ADD CATEGORY ===");
-    console.log("Token:", token);
-    console.log("Translations:", [
-      { language: "en", name: newCategory.en },
-      { language: "ar", name: newCategory.ar },
-    ]);
-
     try {
-      const res = await axios.post(
+      await axios.post(
         "https://hasbani-backend-production.up.railway.app/products/categories/create",
         {
           translations: [
@@ -195,7 +186,6 @@ const AdminProducts = ({ lang = "EN" }) => {
         { headers: { Authorization: `Bearer ${token}` } }
       );
 
-      console.log("Response from server:", res.data);
       setNewCategory({ en: "", ar: "" });
       fetchCategories();
       alert("Category added successfully!");
@@ -207,8 +197,7 @@ const AdminProducts = ({ lang = "EN" }) => {
 
   // Delete category
   const handleDeleteCategory = async (id) => {
-    if (!window.confirm("Are you sure you want to delete this category?"))
-      return;
+    if (!window.confirm("Are you sure you want to delete this category?")) return;
 
     try {
       await axios.delete(
@@ -232,6 +221,9 @@ const AdminProducts = ({ lang = "EN" }) => {
       image: null,
       translations: { ...prod.translations },
     });
+
+    // Scroll form into view
+    formRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
   };
 
   return (
@@ -239,7 +231,7 @@ const AdminProducts = ({ lang = "EN" }) => {
       <h1 className="text-3xl font-bold mb-4">Admin Products</h1>
 
       {/* ===== ADD / EDIT PRODUCT ===== */}
-      <div className="bg-gray-100 p-6 rounded-lg shadow-md space-y-4">
+      <div ref={formRef} className="bg-gray-100 p-6 rounded-lg shadow-md space-y-4">
         <h2 className="font-semibold text-xl">
           {editingProduct ? "Edit Product" : "Add New Product"}
         </h2>
@@ -249,14 +241,8 @@ const AdminProducts = ({ lang = "EN" }) => {
             <label className="block font-semibold">English Name</label>
             <input
               type="text"
-              value={
-                editingProduct
-                  ? editingProduct.translations.en.name
-                  : newProduct.translations.en.name
-              }
-              onChange={(e) =>
-                handleChange("en", "name", e.target.value, !!editingProduct)
-              }
+              value={editingProduct ? editingProduct.translations.en.name : newProduct.translations.en.name}
+              onChange={(e) => handleChange("en", "name", e.target.value, !!editingProduct)}
               className="w-full border p-2 rounded"
             />
           </div>
@@ -265,14 +251,8 @@ const AdminProducts = ({ lang = "EN" }) => {
             <label className="block font-semibold">Arabic Name</label>
             <input
               type="text"
-              value={
-                editingProduct
-                  ? editingProduct.translations.ar.name
-                  : newProduct.translations.ar.name
-              }
-              onChange={(e) =>
-                handleChange("ar", "name", e.target.value, !!editingProduct)
-              }
+              value={editingProduct ? editingProduct.translations.ar.name : newProduct.translations.ar.name}
+              onChange={(e) => handleChange("ar", "name", e.target.value, !!editingProduct)}
               className="w-full border p-2 rounded"
             />
           </div>
@@ -280,39 +260,17 @@ const AdminProducts = ({ lang = "EN" }) => {
           <div>
             <label className="block font-semibold">English Description</label>
             <textarea
-              value={
-                editingProduct
-                  ? editingProduct.translations.en.description
-                  : newProduct.translations.en.description
-              }
-              onChange={(e) =>
-                handleChange(
-                  "en",
-                  "description",
-                  e.target.value,
-                  !!editingProduct
-                )
-              }
+              value={editingProduct ? editingProduct.translations.en.description : newProduct.translations.en.description}
+              onChange={(e) => handleChange("en", "description", e.target.value, !!editingProduct)}
               className="w-full border p-2 rounded"
             />
           </div>
           {/* Arabic Description */}
-          <div ref={formRef}>
+          <div>
             <label className="block font-semibold">Arabic Description</label>
             <textarea
-              value={
-                editingProduct
-                  ? editingProduct.translations.ar.description
-                  : newProduct.translations.ar.description
-              }
-              onChange={(e) =>
-                handleChange(
-                  "ar",
-                  "description",
-                  e.target.value,
-                  !!editingProduct
-                )
-              }
+              value={editingProduct ? editingProduct.translations.ar.description : newProduct.translations.ar.description}
+              onChange={(e) => handleChange("ar", "description", e.target.value, !!editingProduct)}
               className="w-full border p-2 rounded"
             />
           </div>
@@ -320,21 +278,11 @@ const AdminProducts = ({ lang = "EN" }) => {
           <div>
             <label className="block font-semibold">Category</label>
             <select
-              value={
-                editingProduct
-                  ? editingProduct.category_id
-                  : newProduct.category_id
-              }
+              value={editingProduct ? editingProduct.category_id : newProduct.category_id}
               onChange={(e) =>
                 editingProduct
-                  ? setEditingProduct((prev) => ({
-                      ...prev,
-                      category_id: e.target.value,
-                    }))
-                  : setNewProduct((prev) => ({
-                      ...prev,
-                      category_id: e.target.value,
-                    }))
+                  ? setEditingProduct((prev) => ({ ...prev, category_id: e.target.value }))
+                  : setNewProduct((prev) => ({ ...prev, category_id: e.target.value }))
               }
               className="w-full border p-2 rounded"
             >
@@ -361,11 +309,7 @@ const AdminProducts = ({ lang = "EN" }) => {
         <div className="flex items-center gap-4">
           <button
             onClick={editingProduct ? handleUpdateProduct : handleAddProduct}
-            className={`px-4 py-2 rounded text-white ${
-              editingProduct
-                ? "bg-yellow-500 hover:bg-yellow-600"
-                : "bg-blue-600 hover:bg-blue-700"
-            }`}
+            className={`px-4 py-2 rounded text-white ${editingProduct ? "bg-yellow-500 hover:bg-yellow-600" : "bg-blue-600 hover:bg-blue-700"}`}
           >
             {editingProduct ? "Update Product" : "Add Product"}
           </button>
@@ -388,18 +332,14 @@ const AdminProducts = ({ lang = "EN" }) => {
             type="text"
             placeholder="English Name"
             value={newCategory.en}
-            onChange={(e) =>
-              setNewCategory((prev) => ({ ...prev, en: e.target.value }))
-            }
+            onChange={(e) => setNewCategory((prev) => ({ ...prev, en: e.target.value }))}
             className="w-full border p-2 rounded"
           />
           <input
             type="text"
             placeholder="Arabic Name"
             value={newCategory.ar}
-            onChange={(e) =>
-              setNewCategory((prev) => ({ ...prev, ar: e.target.value }))
-            }
+            onChange={(e) => setNewCategory((prev) => ({ ...prev, ar: e.target.value }))}
             className="w-full border p-2 rounded"
           />
         </div>
@@ -416,10 +356,7 @@ const AdminProducts = ({ lang = "EN" }) => {
         <h2 className="font-semibold text-xl">Existing Categories</h2>
         <div className="flex flex-col gap-2">
           {categories.map((c) => (
-            <div
-              key={c.id}
-              className="flex items-center justify-between bg-white p-2 rounded shadow"
-            >
+            <div key={c.id} className="flex items-center justify-between bg-white p-2 rounded shadow">
               <span>{c.name}</span>
               <button
                 onClick={() => handleDeleteCategory(c.id)}
@@ -437,19 +374,14 @@ const AdminProducts = ({ lang = "EN" }) => {
         <h2 className="font-semibold text-xl">Existing Products</h2>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           {products.map((p) => (
-            <div
-              key={p.id}
-              className="bg-white p-4 rounded shadow flex flex-col md:flex-row items-center gap-4"
-            >
+            <div key={p.id} className="bg-white p-4 rounded shadow flex flex-col md:flex-row items-center gap-4">
               <img
                 src={`https://hasbani-backend-production.up.railway.app/uploads/${p.image}`}
                 alt={p.translations.en.name}
                 className="w-32 h-32 object-cover rounded"
               />
               <div className="flex-1 space-y-2">
-                <p>
-                  <b>{p.translations.en.name}</b>
-                </p>
+                <p><b>{p.translations.en.name}</b></p>
                 <p>{p.translations.en.description}</p>
                 <p>Category: {p.category}</p>
               </div>
