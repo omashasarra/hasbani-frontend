@@ -16,7 +16,7 @@ export default function Login() {
         password: password.trim(),
       });
 
-      console.log("Server response:", res.data); // Already there
+      console.log("Server response:", res.data); 
       console.log("Submitting email:", email);
       console.log("Submitting password:", password);
 
