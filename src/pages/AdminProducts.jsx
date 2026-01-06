@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 
 const AdminProducts = ({ lang = "EN" }) => {
+  const formRef = useRef(null);
   const [products, setProducts] = useState([]);
   const [categories, setCategories] = useState([]);
   const [newProduct, setNewProduct] = useState({
@@ -296,7 +297,7 @@ const AdminProducts = ({ lang = "EN" }) => {
             />
           </div>
           {/* Arabic Description */}
-          <div>
+          <div ref={formRef}>
             <label className="block font-semibold">Arabic Description</label>
             <textarea
               value={
